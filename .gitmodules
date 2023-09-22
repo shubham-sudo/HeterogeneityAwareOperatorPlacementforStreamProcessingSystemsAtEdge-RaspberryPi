@@ -1,0 +1,6 @@
+[submodule "team-4"]
+	path = team-4
+	url = https://cs551-gitlab.bu.edu/cs551/spring23/group-4/team-4
+[submodule "flink-placement"]
+	path = flink-placement
+	url = https://cs551-gitlab.bu.edu/cs551/spring23/group-4/flink-placement
