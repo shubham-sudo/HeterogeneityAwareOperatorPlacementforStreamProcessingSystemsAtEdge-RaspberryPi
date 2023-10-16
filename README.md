@@ -5,13 +5,9 @@
 This project involves offloading processing at the edge to pre-process the data for stream processing. It uses Raspberry 
 Pi as edge systems where operators are offloaded to compensate for the latency due to limited bandwidth.
 
-<br/>
-
 ### Problem statement
 
 The project aims to enhance stream processing systems, where resources are limited and latency requirements are stringent. This is accomplished by offloading operators to edge systems that are located near the data source. The goal is to optimize a streaming application that ingests data streams from multiple sources on different locations to the cloud via a Wide Area Network (WAN) with limited bandwidth and high latency. Existing stream processing systems, such as Flink, are mainly designed for data center servers with homogeneous hardware resources and cannot automatically offload tasks to the edge.
-
-<br/>
 
 ### Proposed solution
 
@@ -42,14 +38,9 @@ To offload the tasks, we will modify the scheduler in Flink to use custom schedu
 
 To make the decision of offloading operators to edge systems, we would be developing a cost model. This cost model will incorporate various metrics into account like the ratio of  `numRecordsInPerSecond` and `numRecordsOutPerSecond`, the `trueOutputProcessingRate`, and is the operator stateful or stateless. After using our cost model to make the decision of whether we should move any operator to some other TaskManager, we would try to offload that operator dynamically without the need to restart the job. This could be done by pause that TaskManager, and then using our own strategy to reconfigure the operator placement, if not feasible we would use Flink's default strategy to restart the job with the new placement. For this to work, we have to make Flink compatible with heterogenous resources. Right now, Flink assumes all the TaskManagers have equal resources and are similarly configured (homogenous), we have to modify its behaviour to work with TaskManagers with different resources (heterogenous).
 
-
-<br/>
-
 ### Expectations
 
 Our goal is to implement a prototype that can offload tasks to edge systems to reduce the data traffic and latency overhead caused by the limited bandwidth of WAN. We aim to achieve this by implementing a heterogeneity-aware operator placement algorithm/system that can efficiently offload tasks to edge systems. With this, we expect to use edge resources as efficiently as possible, minimize usage of resources on the server, and improve the system's efficiency without sacrificing performance, thereby improving latency problems over the WAN. We expect to improve the latency performance with our system compared to if all the operators are running on the server resource. We expect to see performance gains if we are able to offload potentially resource cost saving stateless operators (determined by our cost model) to our edge systems compared to if all those operators are running in a server machine / server TaskManager.
-
-<br/>
 
 ### Experimental Plan
 
@@ -77,9 +68,6 @@ The following experimental setup will be used as the starting point:
 - We will deploy our scripts to change placement, deploy Flink cluster and jobs, and collect metrics from Flink using a Python library like [flink-rest-client](https://pypi.org/project/flink-rest-client/).
 - We are going to compare different scheduling policies and compare performance.
 
-
-<br/>
-
 ### Success Indicators
 Since the goal of this project is to reduce the data traffic and latency overhead caused by the limited bandwidth of WAN, the solution should be able to prove and demonstrate that this approach outperforms the normal approach.
 
@@ -104,30 +92,6 @@ Plan of action for the project:
 Our project aims at improving the performance of a Flink job, by improving the placement of operators based on the available resources. It especially aims to tackle the latency overhead introduced over WAN due to limited bandwidth, by placing operators chosed by our algorithm at the edge systems near the source. Therefore, our solution should make these Flink jobs run faster, reduce performance lags due latency introduced from limited bandwidth and reduce resource requirements on server systems. Achieving these success indicators and milestones, would make this project a success. 
 
 Project can be declared a success if we are able to make Flink run with heterogenous hardware, determine the operators which can be offloaded to edge systems, safely and efficiently offload those determined operators and improve the performance of the running Flink job with these steps.
-
-<br/>
-
-### Task assignment
-
-- Atul Lal - Responsible for analyzing performance metrics and predicting scheduling configurations: Atul has been assigned this task because of his strong analytical and problem-solving skills, as well as his ability to work with complex data sets and models.
-
-- Dhruv Toshniwal - Handle metrics collection: Dhruv has been assigned this task because of his programming skills and experience with software development best practices, as well as his ability to work with metrics and debugging code.
-
-- Nishil Agrawal - Experimental setup design and installation of Flink on Raspberry Pi: Nishil has been assigned this task because of his experience with hardware setup and configuration, as well as his knowledge of distributed systems.
-
-- Prateek Jain - Take care of Flink cluster setup, networking management, and bandwidth allocation: Prateek has been assigned this task because of his knowledge of networking protocols and configurations, as well as his experience with network management.
-
-- Shubham Kaushik - Design the scheduler algorithm and handle deployment: Shubham has been assigned this task because of his experience with distributed systems and cluster management, as well as his knowledge of scheduling algorithms and techniques.
-
-**Independent tasks done in parallel:**
-- Firstly, our goal is to make Flink compatible with heterogeneous resources by configuring it with TaskManagers running on systems with different configurations. This will be done in parallel with calculating the performance metric, flink cluster setup, bandwidth allocation and other networking setup.
-- Secondly, we are tasked with implementing a cost model that considers various metrics from the Flink environment, running job, and TaskManagers to determine which operators can be offloaded to TaskManagers on edge systems to improve performance.
-- Finally, we need to change the placement configuration of a running job in Flink based on the output of the cost model.
-
-**Task dependency:**
-- The implementation of the cost model is dependent on the accurate calculation of various metrics from the Flink environment, running job, and TaskManagers. These metrics include processing power, available memory, and network bandwidth, among others. Therefore, before implementing the cost model, we need to ensure that the metrics are being calculated accurately and reliably. Once we have verified the accuracy of these metrics, we can proceed with the design and implementation of the cost model. By using the cost model to determine the most efficient placement of operators, we hope to improve the performance of Flink jobs, particularly in edge computing scenarios where resources are limited.
-- If we are not able to apply the new placement of operators on task managers without restarting the job, then we will work on designing a mechanism to apply the new placement of operators on the task managers in real-time.
-<br/>
 
 ### References
 
